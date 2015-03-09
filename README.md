@@ -1,7 +1,7 @@
 # phalcon-zh-doc
 该文档是编译好的Phalcon离线中文文档。
 
-Phalcon是一个用C语言写的高性能PHP框框架，官网：http://phalconphp.com/
+Phalcon是一个用C语言写的高性能PHP开源框架，官网：http://phalconphp.com/
 
 
 ### 为什么
