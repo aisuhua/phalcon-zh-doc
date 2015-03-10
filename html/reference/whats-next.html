@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html lang="zh">
+  <head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>提高性能：下一步该做什么？（Increasing Performance: What’s next?） &mdash; Phalcon 1.3.0 文档</title>
+    <link href="../_static/rewrite.css" rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/docs.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+
+    <script src="../_static/jquery.min.js"></script>
+    <script type="text/javascript" src="../_static/docs.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="Phalcon 1.3.0 文档" href="../index.html" />
+    <link rel="next" title="单元测试（Unit testing）" href="unit-testing.html" />
+    <link rel="prev" title="Linux 系统下使用 Phalcon 开发工具（Phalcon Developer Tools on Linux）" href="linuxtools.html" /> 
+  </head>
+  <body>
+    <div id="wrapper">
+
+        <div class="size-wrap">
+
+            <div class="header clear-fix">
+                <a class="header-logo" href="http://phalconphp.com"><span class="logo-text">Phalcon</span></a>
+                <div class="header-right">
+                    <iframe src=""
+allowtransparency="true" frameborder="0" scrolling="0" width="152px" height="30px"></iframe>
+                </div>
+                <ul class="header-nav">
+                    <li><a href="http://phalconphp.com/" class="header-nav-link">Home</a></li>
+                    <li><a href="http://phalconphp.com/download" class="header-nav-link">Download</a></li>
+                    <li><a href="http://forum.phalconphp.com/" class="header-nav-link active">Forum</a></li>
+                    <li><a href="http://blog.phalconphp.com/" class="header-nav-link">Blog</a></li>
+                    <li><a href="http://phalconphp.com/support" class="header-nav-link">Support</a></li>
+                    <li><a href="http://store.phalconphp.com/" class="header-nav-link">Store</a></li>
+                    <li><a href="https://github.com/phalcon/cphalcon" class="header-nav-link">GitHub</a></li>
+                </ul>
+            </div>
+
+        </div>
+    <div class="header-line">
+      <div class="size-wrap">
+        <div class="header-line-title title-white">Documentation</div>
+      </div>
+    </div>
+    <div class="related">
+      <ul>
+        <li class="right" >
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="unit-testing.html" title="单元测试（Unit testing）"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="linuxtools.html" title="Linux 系统下使用 Phalcon 开发工具（Phalcon Developer Tools on Linux）"
+             accesskey="P">上一页</a> |</li>
+        <li><a href="http://phalconphp.com">Home</a> &raquo;</li>
+        <li><a href="../index.html">Phalcon 1.3.0 文档</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+      <table width="90%" align="center">
+        <tr>
+      <td class="primary-box" width="25%" valign="top">
+            <div>
+            <div id="searchbox" style="">
+                <!--<form class="search" action="http://readthedocs.org/search/project/" method="get">
+                  <input type="search" name="q" size="25" placeholder="Search">
+                  <input type="submit" value="Go">
+                  <input type="hidden" name="selected_facets" value="project:">
+                </form>-->
+                <div style="width:200px;padding:10px">
+                  <gcse:searchbox-only></gcse:searchbox-only>
+                </div>
+                <hr>
+            </div>
+            </div>
+			<!--
+            <div style="padding:5px;padding-left:10px">
+              <div id="carbonads-container">
+                <div class="carbonad"><div id="azcarbon"></div>
+                <script type="text/javascript">var z = document.createElement("script"); z.type = "text/javascript"; z.async = true; z.src = "http://engine.carbonads.com/z/56496/azcarbon_2_1_0_VERT"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(z, s);</script>
+                </div></div>
+            </div>
+			-->
+            <h3><a href="../index.html">內容目录</a></h3>
+            <ul>
+<li><a class="reference internal" href="#">提高性能：下一步该做什么？（Increasing Performance: What&#8217;s next?）</a><ul>
+<li><a class="reference internal" href="#profile-on-the-server">关于服务端（Profile on the Server）</a><ul>
+<li><a class="reference internal" href="#xdebug-profiling-with-xdebug">关于 XDebug（Profiling with XDebug）</a></li>
+<li><a class="reference internal" href="#xhprof-profiling-with-xhprof">关于 Xhprof（Profiling with Xhprof）</a></li>
+<li><a class="reference internal" href="#sql-profiling-sql-statements">关于 SQL 语句（Profiling SQL Statements）</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#profile-on-the-client">关于客户端（Profile on the Client）</a><ul>
+<li><a class="reference internal" href="#chrome-firefox-profile-with-chrome-firefox">（使用Chrome/Firefox进行性能分析）Profile with Chrome/Firefox</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#yahoo-yslow">Yahoo! YSlow</a><ul>
+<li><a class="reference internal" href="#speed-trace-profile-with-speed-tracer">使用Speed Trace进行性能分析(Profile with Speed Tracer)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#php-use-a-recent-php-version">使用最新的 PHP 版本（Use a recent PHP version）</a></li>
+<li><a class="reference internal" href="#php-use-a-php-bytecode-cache">使用 PHP 字节码缓存（Use a PHP Bytecode Cache）</a></li>
+<li><a class="reference internal" href="#do-blocking-work-in-the-background">将可能发生阻塞的操作放到后台运行（Do blocking work in the background）</a></li>
+<li><a class="reference internal" href="#google-page-speed">Google Page Speed</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>上一个主题</h4>
+            <p class="topless"><a href="linuxtools.html" title="上一章">&lt; Linux 系统下使用 Phalcon 开发工具（Phalcon Developer Tools on Linux）</a></p>
+            <h4>下一个主题</h4>
+            <p class="topless"><a href="unit-testing.html" title="下一章">单元测试（Unit testing） &gt;</a></p>
+            <h3>本页</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/reference/whats-next.txt" rel="nofollow">显示源代码</a></li>
+            </ul>
+        </td>
+          <td class="second-box" valign="top">
+            <div class="document">
+                <div class="documentwrapper">
+                  <div class="bodywrapper">
+                    <div class="body" >
+                      
+  <div class="section" id="increasing-performance-what-s-next">
+<h1>提高性能：下一步该做什么？（Increasing Performance: What&#8217;s next?）<a class="headerlink" href="#increasing-performance-what-s-next" title="永久链接至标题">¶</a></h1>
+<p>要开发出高性能的应用程序需要考虑多方面的因素： 服务器， 客户端， 网络， 数据库， web服务器，静态资源等。 本章中我集中分析在如何提升系统的性能及
+如何检测应用的瓶颈。</p>
+<div class="section" id="profile-on-the-server">
+<h2>关于服务端（Profile on the Server）<a class="headerlink" href="#profile-on-the-server" title="永久链接至标题">¶</a></h2>
+<p>每种应用都有不同， 持久的性能分析对找出系统瓶颈是非常必要的。 性能分析可以让我们更直观的看出何处为性能瓶颈，何处不是。 性能分析在一个请示中和另一请求中可能表现
+不一，所以要做出足够的分析及权衡方可给出结论。</p>
+<div class="section" id="xdebug-profiling-with-xdebug">
+<h3>关于 XDebug（Profiling with XDebug）<a class="headerlink" href="#xdebug-profiling-with-xdebug" title="永久链接至标题">¶</a></h3>
+<p><a class="reference external" href="http://xdebug.org/docs">Xdebug</a> 提供了简易的性能测试的方式， 安装后可在php.ini中 进行如下配置：</p>
+<div class="highlight-ini"><div class="highlight"><pre><span class="na">xdebug.profiler_enable</span> <span class="o">=</span> <span class="s">On</span>
+</pre></div>
+</div>
+<p>使用 <a href="#id1"><span class="problematic" id="id2">Webgrid_</span></a> 可以分析出哪些函数或方法比其它的要慢：</p>
+<div class="figure align-center">
+<img alt="../_images/webgrind.jpg" src="../_images/webgrind.jpg" />
+</div>
+</div>
+<div class="section" id="xhprof-profiling-with-xhprof">
+<h3>关于 Xhprof（Profiling with Xhprof）<a class="headerlink" href="#xhprof-profiling-with-xhprof" title="永久链接至标题">¶</a></h3>
+<p><a class="reference external" href="https://github.com/facebook/xhprof">Xhprof</a> 也是一个非常有意思的扩展。 开发者可以添加如下的代码到启动文件中：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="nb">xhprof_enable</span><span class="p">(</span><span class="nx">XHPROF_FLAGS_CPU</span> <span class="o">+</span> <span class="nx">XHPROF_FLAGS_MEMORY</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>然后在启动文件的结尾保存性能分析数据：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="nv">$xhprof_data</span> <span class="o">=</span> <span class="nb">xhprof_disable</span><span class="p">(</span><span class="s1">&#39;/tmp&#39;</span><span class="p">);</span>
+
+<span class="nv">$XHPROF_ROOT</span> <span class="o">=</span> <span class="s2">&quot;/var/www/xhprof/&quot;</span><span class="p">;</span>
+<span class="k">include_once</span> <span class="nv">$XHPROF_ROOT</span> <span class="o">.</span> <span class="s2">&quot;/xhprof_lib/utils/xhprof_lib.php&quot;</span><span class="p">;</span>
+<span class="k">include_once</span> <span class="nv">$XHPROF_ROOT</span> <span class="o">.</span> <span class="s2">&quot;/xhprof_lib/utils/xhprof_runs.php&quot;</span><span class="p">;</span>
+
+<span class="nv">$xhprof_runs</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XHProfRuns_Default</span><span class="p">();</span>
+<span class="nv">$run_id</span> <span class="o">=</span> <span class="nv">$xhprof_runs</span><span class="o">-&gt;</span><span class="na">save_run</span><span class="p">(</span><span class="nv">$xhprof_data</span><span class="p">,</span> <span class="s2">&quot;xhprof_testing&quot;</span><span class="p">);</span>
+
+<span class="k">echo</span> <span class="s2">&quot;http://localhost/xhprof/xhprof_html/index.php?run=</span><span class="si">{</span><span class="nv">$run_id</span><span class="si">}</span><span class="s2">&amp;source=xhprof_testing</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Xhprof 提供了一个内置的html视图用来对性能分析的数据进行展示：</p>
+<div class="figure align-center">
+<img alt="../_images/xhprof-2.jpg" src="../_images/xhprof-2.jpg" />
+</div>
+<div class="figure align-center">
+<img alt="../_images/xhprof-1.jpg" src="../_images/xhprof-1.jpg" />
+</div>
+</div>
+<div class="section" id="sql-profiling-sql-statements">
+<h3>关于 SQL 语句（Profiling SQL Statements）<a class="headerlink" href="#sql-profiling-sql-statements" title="永久链接至标题">¶</a></h3>
+<p>几乎所有的数据库系统都提供了相关的工具以找出哪些执行缓慢的sql语句。 检测及修复那些执行缓慢的查询对提高服务器端系统的性能来说是非常重要的。
+在Mysql数据库中， 开发者可以启用慢查询日志来记录执行缓慢的查询：</p>
+<div class="highlight-ini"><div class="highlight"><pre><span class="na">log-slow-queries</span> <span class="o">=</span> <span class="s">/var/log/slow-queries.log</span>
+<span class="na">long_query_time</span> <span class="o">=</span> <span class="s">1.5</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="profile-on-the-client">
+<h2>关于客户端（Profile on the Client）<a class="headerlink" href="#profile-on-the-client" title="永久链接至标题">¶</a></h2>
+<p>有时开发者需要提升静态资源加载的速度， 比如图片， javascript, css等。 下面的工具可以让开发者从客户端检测静态资源加载的瓶颈：</p>
+<div class="section" id="chrome-firefox-profile-with-chrome-firefox">
+<h3>（使用Chrome/Firefox进行性能分析）Profile with Chrome/Firefox<a class="headerlink" href="#chrome-firefox-profile-with-chrome-firefox" title="永久链接至标题">¶</a></h3>
+<p>几乎所有的现代浏览器都有相应的工具来检测页面加载时间。 Chrome中开发者可使用web探察器来获取一个页面的所有资源加载所需的时间：
+.. figure:: ../_static/img/chrome-1.jpg</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">align:</th><td class="field-body">center</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><a class="reference external" href="http://getfirebug.com/">Firebug</a> 提供了类似的功能：</p>
+<div class="figure align-center">
+<img alt="../_images/firefox-1.jpg" src="../_images/firefox-1.jpg" />
+</div>
+</div>
+</div>
+<div class="section" id="yahoo-yslow">
+<h2>Yahoo! YSlow<a class="headerlink" href="#yahoo-yslow" title="永久链接至标题">¶</a></h2>
+<p>开发者可以使用 <a class="reference external" href="http://developer.yahoo.com/yslow/">YSlow</a> 对网页进行分析， YSlow给出基于 <a class="reference external" href="http://developer.yahoo.com/performance/rules.html">rules for high performance web pages</a> （高性能网页规)的建议：</p>
+<div class="figure align-center">
+<img alt="../_images/yslow-1.jpg" src="../_images/yslow-1.jpg" />
+</div>
+<div class="section" id="speed-trace-profile-with-speed-tracer">
+<h3>使用Speed Trace进行性能分析(Profile with Speed Tracer)<a class="headerlink" href="#speed-trace-profile-with-speed-tracer" title="永久链接至标题">¶</a></h3>
+<p><a class="reference external" href="https://developers.google.com/web-toolkit/speedtracer/">Speed Tracer</a> 这个工具可以帮助开发者找出web应用性能方面的问题。 这个工个从浏览器的底层分析出web应用的性能。 Speed Tracer 这个插可以安装
+在Ｗindows或Linux版本的Chrome上。</p>
+<div class="figure align-center">
+<img alt="../_images/speed-tracer.jpg" src="../_images/speed-tracer.jpg" />
+</div>
+<p>这是一个非常有用的工具，它可以为我们显示出html页面渲染的时间， Javascript及css执行(渲染)的时间等。</p>
+</div>
+</div>
+<div class="section" id="php-use-a-recent-php-version">
+<h2>使用最新的 PHP 版本（Use a recent PHP version）<a class="headerlink" href="#php-use-a-recent-php-version" title="永久链接至标题">¶</a></h2>
+<p>PHP本身的执行速度已经越来越快了， 使用最新版本的php及phalcon可以更高的提升web应用的执行速度。</p>
+</div>
+<div class="section" id="php-use-a-php-bytecode-cache">
+<h2>使用 PHP 字节码缓存（Use a PHP Bytecode Cache）<a class="headerlink" href="#php-use-a-php-bytecode-cache" title="永久链接至标题">¶</a></h2>
+<p><a class="reference external" href="http://php.net/manual/en/book.apc.php">APC</a> 像其它的字节码缓存工具一样可以帮助web应用程序减少读取及解析php文件解析所花的时间。 安装完apc之后在php.ini中添加如何配置：</p>
+<div class="highlight-ini"><div class="highlight"><pre><span class="na">apc.enabled</span> <span class="o">=</span> <span class="s">On</span>
+</pre></div>
+</div>
+<p>PHP5.5中包含了一个内置的字节码缓存器，即 ZendOptimizer+, 这个扩展在5.3及5.4版本的php中也存在，只不过不是内置的而是用扩展的形式存在的。</p>
+</div>
+<div class="section" id="do-blocking-work-in-the-background">
+<h2>将可能发生阻塞的操作放到后台运行（Do blocking work in the background）<a class="headerlink" href="#do-blocking-work-in-the-background" title="永久链接至标题">¶</a></h2>
+<p>处理视频， 发送e-mail, 压缩文件和图片等是非常耗时的， 这些最好放在后台执行。 开发者可以使用队列及消息系统以提高web应用的性能，可使用如下组件：</p>
+<ul class="simple">
+<li><a class="reference external" href="http://kr.github.io/beanstalkd/">Beanstalkd</a></li>
+<li><a class="reference external" href="http://redis.io/">Redis</a></li>
+<li><a class="reference external" href="http://www.rabbitmq.com/">RabbitMQ</a></li>
+<li><a class="reference external" href="https://github.com/chrisboulton/php-resque">Resque</a></li>
+<li><a class="reference external" href="http://gearman.org/">Gearman</a></li>
+<li><a class="reference external" href="http://www.zeromq.org/">ZeroMQ</a></li>
+</ul>
+</div>
+<div class="section" id="google-page-speed">
+<h2>Google Page Speed<a class="headerlink" href="#google-page-speed" title="永久链接至标题">¶</a></h2>
+<p><a class="reference external" href="https://developers.google.com/speed/pagespeed/mod">mod_pagespeed</a> 可以加速网站的运行速度及减少网站的加载时间。 这个开源的apache web服务器模块（nginx下为ngx_pagespeed）会
+自动对网页，静态资源（CSS, JavaScript, images）等进行性能相关的优化，而无需开发者修改已存在的代码，内容，及工作流等。</p>
+<p>注： 更多的性能相关的配置或建议可以查看具体的web服务器, 如apache中提供了mod_cache, mod_disk_cache等.</p>
+</div>
+</div>
+
+
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    <div class="related">
+      <ul>
+        <li class="right" >
+          <a href="../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="unit-testing.html" title="单元测试（Unit testing）"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="linuxtools.html" title="Linux 系统下使用 Phalcon 开发工具（Phalcon Developer Tools on Linux）"
+             >上一页</a> |</li> 
+      </ul>
+    </div>
+        <div id="footer">
+
+          <p>Found a typo or an error? Want to improve this document? The documentation sources are available on <a href="http://github.com/phalcon/docs">Github</a></p>
+          <p>Need support or have questions? Check our <a href="http://phalconphp.com/support">Support Page</a></p>
+
+          <p>The Phalcon PHP Framework is released under the <a href="https://github.com/phalcon/cphalcon/blob/master/docs/LICENSE.md">new BSD license</a>.</p>
+          <p>Except where otherwise noted, content on this site is licensed under the
+            <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License.</a></p>
+             最后更新于 Mar 10, 2015.
+            Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3b3.
+
+          <p>
+             &copy; 版权所有 2014, Phalcon Team and contributors.
+          </p>
+
+            <div class="size-wrap footer-wrap">
+
+                <div class="donate-wrap">
+                    Donate to Phalcon: <a href="http://flattr.com/thing/1134206/Phalcon-PHP-Framework" target="_blank" class="button button-small orange">Flattr</a>
+                    or
+                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="display: inline">
+                        <input type="hidden" name="cmd" value="_s-xclick">
+                        <input type="hidden" name="hosted_button_id" value="7LSYMNMFZNG8W">
+                        <input class="button button-small orange" style="border: inherit; display: inline; font-weight: bold" type="submit" value="via Paypal" title="PayPal — The safer, easier way to pay online.">
+                    </form>
+                </div>
+
+                <div class="social-links">
+                    <a href="https://twitter.com/phalconphp" class="social-link tw">Twitter</a>
+                    <a href="http://www.facebook.com/pages/Phalcon/134230726685897" class="social-link fb">Facebook</a>
+                    <a href="https://plus.google.com/102376109340560896457" class="social-link gp">Google Plus</a>
+                    <a href="http://vimeo.com/user10964377" class="social-link vm">Vimeo</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <script type="text/javascript">
+    /*$(window).on("load", function(){
+      var cx = '009733439235723428699:lh9ltjgvdz8';
+      var gcse = document.createElement('script');
+      gcse.type = 'text/javascript';
+      gcse.async = true;
+      gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//www.google.com/cse/cse.js?cx=' + cx;
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(gcse, s);
+      window.setTimeout(function(){
+        $('.gsc-search-button').css({
+          'background': '#f06715',
+          'padding': '2px',
+          'border': '0'
+        });
+      }, 1000)
+    });*/
+    </script>
+
+  </body>
+</html>

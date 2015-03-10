@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+
+<html lang="zh">
+  <head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>数据库抽象层（Database Abstraction Layer） &mdash; Phalcon 1.3.0 文档</title>
+    <link href="../_static/rewrite.css" rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/docs.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+
+    <script src="../_static/jquery.min.js"></script>
+    <script type="text/javascript" src="../_static/docs.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="Phalcon 1.3.0 文档" href="../index.html" />
+    <link rel="next" title="国际化（Internationalization）" href="intl.html" />
+    <link rel="prev" title="队列（Queueing）" href="queue.html" /> 
+  </head>
+  <body>
+    <div id="wrapper">
+
+        <div class="size-wrap">
+
+            <div class="header clear-fix">
+                <a class="header-logo" href="http://phalconphp.com"><span class="logo-text">Phalcon</span></a>
+                <div class="header-right">
+                    <iframe src=""
+allowtransparency="true" frameborder="0" scrolling="0" width="152px" height="30px"></iframe>
+                </div>
+                <ul class="header-nav">
+                    <li><a href="http://phalconphp.com/" class="header-nav-link">Home</a></li>
+                    <li><a href="http://phalconphp.com/download" class="header-nav-link">Download</a></li>
+                    <li><a href="http://forum.phalconphp.com/" class="header-nav-link active">Forum</a></li>
+                    <li><a href="http://blog.phalconphp.com/" class="header-nav-link">Blog</a></li>
+                    <li><a href="http://phalconphp.com/support" class="header-nav-link">Support</a></li>
+                    <li><a href="http://store.phalconphp.com/" class="header-nav-link">Store</a></li>
+                    <li><a href="https://github.com/phalcon/cphalcon" class="header-nav-link">GitHub</a></li>
+                </ul>
+            </div>
+
+        </div>
+    <div class="header-line">
+      <div class="size-wrap">
+        <div class="header-line-title title-white">Documentation</div>
+      </div>
+    </div>
+    <div class="related">
+      <ul>
+        <li class="right" >
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="intl.html" title="国际化（Internationalization）"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="queue.html" title="队列（Queueing）"
+             accesskey="P">上一页</a> |</li>
+        <li><a href="http://phalconphp.com">Home</a> &raquo;</li>
+        <li><a href="../index.html">Phalcon 1.3.0 文档</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+      <table width="90%" align="center">
+        <tr>
+      <td class="primary-box" width="25%" valign="top">
+            <div>
+            <div id="searchbox" style="">
+                <!--<form class="search" action="http://readthedocs.org/search/project/" method="get">
+                  <input type="search" name="q" size="25" placeholder="Search">
+                  <input type="submit" value="Go">
+                  <input type="hidden" name="selected_facets" value="project:">
+                </form>-->
+                <div style="width:200px;padding:10px">
+                  <gcse:searchbox-only></gcse:searchbox-only>
+                </div>
+                <hr>
+            </div>
+            </div>
+			<!--
+            <div style="padding:5px;padding-left:10px">
+              <div id="carbonads-container">
+                <div class="carbonad"><div id="azcarbon"></div>
+                <script type="text/javascript">var z = document.createElement("script"); z.type = "text/javascript"; z.async = true; z.src = "http://engine.carbonads.com/z/56496/azcarbon_2_1_0_VERT"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(z, s);</script>
+                </div></div>
+            </div>
+			-->
+            <h3><a href="../index.html">內容目录</a></h3>
+            <ul>
+<li><a class="reference internal" href="#">数据库抽象层（Database Abstraction Layer）</a><ul>
+<li><a class="reference internal" href="#database-adapters">数据库适配器（Database Adapters）</a><ul>
+<li><a class="reference internal" href="#implementing-your-own-adapters">自定义适配器（Implementing your own adapters）</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id1">数据库“方言”</a><ul>
+<li><a class="reference internal" href="#implementing-your-own-dialects">自定义“方言”（Implementing your own dialects）</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#connecting-to-databases">连接数据库（Connecting to Databases）</a></li>
+<li><a class="reference internal" href="#pdo-setting-up-additional-pdo-options">设置额外的 PDO 选项（Setting up additional PDO options）</a></li>
+<li><a class="reference internal" href="#finding-rows">查找行（Finding Rows）</a></li>
+<li><a class="reference internal" href="#binding-parameters">绑定参数（Binding Parameters）</a></li>
+<li><a class="reference internal" href="#inserting-updating-deleting-rows">插入、更新、删除行（Inserting/Updating/Deleting Rows）</a></li>
+<li><a class="reference internal" href="#transactions-and-nested-transactions">事务与嵌套事务（Transactions and Nested Transactions）</a></li>
+<li><a class="reference internal" href="#database-events">数据库事件（Database Events）</a></li>
+<li><a class="reference internal" href="#sql-profiling-sql-statements">分析 SQL 语句（Profiling SQL Statements）</a></li>
+<li><a class="reference internal" href="#sql-logging-sql-statements">记录 SQL 语句（Logging SQL Statements）</a><ul>
+<li><a class="reference internal" href="#implementing-your-own-logger">自定义日志记录器（Implementing your own Logger）</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#describing-tables-views">获取数据库表与视图信息（Describing Tables/Views）</a></li>
+<li><a class="reference internal" href="#id2">创建/修改/删除表</a><ul>
+<li><a class="reference internal" href="#creating-tables">创建数据库表（Creating Tables）</a></li>
+<li><a class="reference internal" href="#altering-tables">修改数据库表（Altering Tables）</a></li>
+<li><a class="reference internal" href="#dropping-tables">删除数据库表（Dropping Tables）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>上一个主题</h4>
+            <p class="topless"><a href="queue.html" title="上一章">&lt; 队列（Queueing）</a></p>
+            <h4>下一个主题</h4>
+            <p class="topless"><a href="intl.html" title="下一章">国际化（Internationalization） &gt;</a></p>
+            <h3>本页</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/reference/db.txt" rel="nofollow">显示源代码</a></li>
+            </ul>
+        </td>
+          <td class="second-box" valign="top">
+            <div class="document">
+                <div class="documentwrapper">
+                  <div class="bodywrapper">
+                    <div class="body" >
+                      
+  <div class="section" id="database-abstraction-layer">
+<h1>数据库抽象层（Database Abstraction Layer）<a class="headerlink" href="#database-abstraction-layer" title="永久链接至标题">¶</a></h1>
+<p><a class="reference internal" href="../api/Phalcon_Db.html"><em>Phalcon\Db</em></a> 是 <a class="reference internal" href="../api/Phalcon_Mvc_Model.html"><em>Phalcon\Mvc\Model</em></a> 背后的一个组件，它为框架提供了强大的model层。它是一个完全由C语言写的独立的高级抽象层的数据库系统。</p>
+<p>这个组件提供了比传统模式的更容易上手的数据库操作。</p>
+<blockquote class="highlights">
+<div>这个指引不是一个完整的包含所有方法和它们的参数的文档。
+查看完整的文档参考，请访问 <a class="reference internal" href="../api/index.html"><em>API</em></a></div></blockquote>
+<div class="section" id="database-adapters">
+<h2>数据库适配器（Database Adapters）<a class="headerlink" href="#database-adapters" title="永久链接至标题">¶</a></h2>
+<p>这个组件利用了这些适配器去封装特定的数据库的详细操作。Phalcon使用 <a class="reference external" href="http://www.php.net/manual/en/book.pdo.php">PDO</a> 去连接这些数据库。下面这些是我们支持的数据库引擎：</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="69%" />
+<col width="27%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">名称</th>
+<th class="head">描述</th>
+<th class="head">API</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>MySQL</td>
+<td>MySQL是这个世界上最多人使用的关系数据库，它作为服务器运行为多用户提供了访问多个数据库的功能。</td>
+<td><a class="reference internal" href="../api/Phalcon_Db_Adapter_Pdo_Mysql.html"><em>Phalcon\Db\Adapter\Pdo\Mysql</em></a></td>
+</tr>
+<tr class="row-odd"><td>PostgreSQL</td>
+<td>PostgreSQL是一个强大，开源的关系数据库。它拥有超过15年的积极发展和经过验证的架构，这些已经为它赢得了可靠性、数据完整性、正确性的良好的声誉</td>
+<td><a class="reference internal" href="../api/Phalcon_Db_Adapter_Pdo_Postgresql.html"><em>Phalcon\Db\Adapter\Pdo\Postgresql</em></a></td>
+</tr>
+<tr class="row-even"><td>SQLite</td>
+<td>SQLite是一个实现一个自包含的，无服务器，零配置，支持事务的SQL数据库引擎的软件库</td>
+<td><a class="reference internal" href="../api/Phalcon_Db_Adapter_Pdo_Sqlite.html"><em>Phalcon\Db\Adapter\Pdo\Sqlite</em></a></td>
+</tr>
+<tr class="row-odd"><td>Oracle</td>
+<td>Oracle是一个对象-关系数据库，由甲骨文公司生产和销售。</td>
+<td><a class="reference internal" href="../api/Phalcon_Db_Adapter_Pdo_Oracle.html"><em>Phalcon\Db\Adapter\Pdo\Oracle</em></a></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="implementing-your-own-adapters">
+<h3>自定义适配器（Implementing your own adapters）<a class="headerlink" href="#implementing-your-own-adapters" title="永久链接至标题">¶</a></h3>
+<p>如果你想创建自己的适配器或者扩展现有的适配器，这个 <a class="reference internal" href="../api/Phalcon_Db_AdapterInterface.html"><em>Phalcon\Db\AdapterInterface</em></a> 接口必须被实现。</p>
+</div>
+</div>
+<div class="section" id="id1">
+<h2>数据库“方言”<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<p>Phalcon把每个数据库引擎的具体操作封装成“方言”，这些“方言”提供了提供通用的功能和SQL生成的适配器。
+(译者注：这里的“方言”是指Phalcon把一些常用的数据库操作封装成类的方法，例如检查数据库中表是否存在，不再需要麻烦的手动写SQL，可以把调用tableExists方法去查询)</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="37%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">名称</th>
+<th class="head">描述</th>
+<th class="head">API</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>MySQL</td>
+<td>MySQL的具体“方言”</td>
+<td><a class="reference internal" href="../api/Phalcon_Db_Dialect_Mysql.html"><em>Phalcon\Db\Dialect\Mysql</em></a></td>
+</tr>
+<tr class="row-odd"><td>PostgreSQL</td>
+<td>PostgreSQL的具体“方言”</td>
+<td><a class="reference internal" href="../api/Phalcon_Db_Dialect_Postgresql.html"><em>Phalcon\Db\Dialect\Postgresql</em></a></td>
+</tr>
+<tr class="row-even"><td>SQLite</td>
+<td>SQLite的具体“方言”</td>
+<td><a class="reference internal" href="../api/Phalcon_Db_Dialect_Sqlite.html"><em>Phalcon\Db\Dialect\Sqlite</em></a></td>
+</tr>
+<tr class="row-odd"><td>Oracle</td>
+<td>Oracle的具体“方言”</td>
+<td><a class="reference internal" href="../api/Phalcon_Db_Dialect_Oracle.html"><em>Phalcon\Db\Dialect\Oracle</em></a></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="implementing-your-own-dialects">
+<h3>自定义“方言”（Implementing your own dialects）<a class="headerlink" href="#implementing-your-own-dialects" title="永久链接至标题">¶</a></h3>
+<p>如果你想创建自己的“方言”或者扩展现有的“方言”，你需要实现这个接口： <a class="reference internal" href="../api/Phalcon_Db_DialectInterface.html"><em>Phalcon\Db\DialectInterface</em></a></p>
+</div>
+</div>
+<div class="section" id="connecting-to-databases">
+<h2>连接数据库（Connecting to Databases）<a class="headerlink" href="#connecting-to-databases" title="永久链接至标题">¶</a></h2>
+<p>为了建立连接，实例化适配器类是必须的。它只接收一个包含连接参数的数组。
+下面的例子展示了，传递必要参数和可选项的参数去连接数据库：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="c1">// 必要参数</span>
+<span class="nv">$config</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s2">&quot;host&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;username&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;mike&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;password&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dbname&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;test_db&quot;</span>
+<span class="p">);</span>
+
+<span class="c1">// 可选参数</span>
+<span class="nv">$config</span><span class="p">[</span><span class="s2">&quot;persistent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+
+<span class="c1">// 创建连接</span>
+<span class="nv">$connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\Phalcon\Db\Adapter\Pdo\Mysql</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="c1">// 必要参数</span>
+<span class="nv">$config</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s2">&quot;host&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;username&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;password&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;secret1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dbname&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;template&quot;</span>
+<span class="p">);</span>
+
+<span class="c1">// 可选参数</span>
+<span class="nv">$config</span><span class="p">[</span><span class="s2">&quot;schema&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;public&quot;</span><span class="p">;</span>
+
+<span class="c1">// 创建连接</span>
+<span class="nv">$connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\Phalcon\Db\Adapter\Pdo\Postgresql</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="c1">// 必要参数</span>
+<span class="nv">$config</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s2">&quot;dbname&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;/path/to/database.db&quot;</span>
+<span class="p">);</span>
+
+<span class="c1">// 创建连接</span>
+<span class="nv">$connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\Phalcon\Db\Adapter\Pdo\Sqlite</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="c1">// 基本配置信息</span>
+<span class="nv">$config</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s1">&#39;username&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;scott&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;password&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;tiger&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dbname&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;192.168.10.145/orcl&#39;</span><span class="p">,</span>
+<span class="p">);</span>
+
+<span class="c1">// 高级配置信息</span>
+<span class="nv">$config</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s1">&#39;dbname&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=xe)(FAILOVER_MODE=(TYPE=SELECT)(METHOD=BASIC)(RETRIES=20)(DELAY=5))))&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;username&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;scott&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;password&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;tiger&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;charset&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AL32UTF8&#39;</span><span class="p">,</span>
+<span class="p">);</span>
+
+<span class="c1">// 创建连接</span>
+<span class="nv">$connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\Phalcon\Db\Adapter\Pdo\Oracle</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pdo-setting-up-additional-pdo-options">
+<h2>设置额外的 PDO 选项（Setting up additional PDO options）<a class="headerlink" href="#pdo-setting-up-additional-pdo-options" title="永久链接至标题">¶</a></h2>
+<p>你可以在连接的时候，通过传递&#8217;options&#8217;参数，设置PDO选项：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="c1">// 带PDO options参数的创建连接</span>
+<span class="nv">$connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\Phalcon\Db\Adapter\Pdo\Mysql</span><span class="p">(</span><span class="k">array</span><span class="p">(</span>
+    <span class="s2">&quot;host&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;username&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;root&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;password&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dbname&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;test_db&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;options&quot;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+        <span class="nx">PDO</span><span class="o">::</span><span class="na">MYSQL_ATTR_INIT_COMMAND</span> <span class="o">=&gt;</span> <span class="s2">&quot;SET NAMES \&#39;UTF8\&#39;&quot;</span><span class="p">,</span>
+        <span class="nx">PDO</span><span class="o">::</span><span class="na">ATTR_CASE</span> <span class="o">=&gt;</span> <span class="nx">PDO</span><span class="o">::</span><span class="na">CASE_LOWER</span>
+    <span class="p">)</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="finding-rows">
+<h2>查找行（Finding Rows）<a class="headerlink" href="#finding-rows" title="永久链接至标题">¶</a></h2>
+<p>文档 <a class="reference internal" href="../api/Phalcon_Db.html"><em>Phalcon\Db</em></a> 提供了几种方法去查询行。在这个例子中，SQL语句是必须符合数据库的SQL语法的：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="nv">$sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, name FROM robots ORDER BY name&quot;</span><span class="p">;</span>
+
+<span class="c1">// 发送SQL语句到数据库</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+
+<span class="c1">// 打印每个robot名称</span>
+<span class="k">while</span> <span class="p">(</span><span class="nv">$robot</span> <span class="o">=</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="na">fetch</span><span class="p">())</span> <span class="p">{</span>
+   <span class="k">echo</span> <span class="nv">$robot</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">// 返回一个包含返回结果的数组</span>
+<span class="nv">$robots</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">fetchAll</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$robots</span> <span class="k">as</span> <span class="nv">$robot</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">echo</span> <span class="nv">$robot</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">// 只返回查询结果的第一条数据</span>
+<span class="nv">$robot</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">fetchOne</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>默认情况下，这些调用会建立一个数组，数组中包含以字段名和以数字下标为key的值。你可以改变这种行为通过使用 Phalcon\Db\Result::setFetchMode() 。这个方法接受一个常量值，确定哪些类型的指标是被要求的。</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">常量</th>
+<th class="head">描述</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Phalcon\Db::FETCH_NUM</td>
+<td>返回一个包含数字下标的数组</td>
+</tr>
+<tr class="row-odd"><td>Phalcon\Db::FETCH_ASSOC</td>
+<td>返回一个包含字段名的数组</td>
+</tr>
+<tr class="row-even"><td>Phalcon\Db::FETCH_BOTH</td>
+<td>返回一个包含字段名和数字下标的数组</td>
+</tr>
+<tr class="row-odd"><td>Phalcon\Db::FETCH_OBJ</td>
+<td>返回一个对象而不是一个数组</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="nv">$sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, name FROM robots ORDER BY name&quot;</span><span class="p">;</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+
+<span class="nv">$result</span><span class="o">-&gt;</span><span class="na">setFetchMode</span><span class="p">(</span><span class="nx">Phalcon\Db</span><span class="o">::</span><span class="na">FETCH_NUM</span><span class="p">);</span>
+<span class="k">while</span> <span class="p">(</span><span class="nv">$robot</span> <span class="o">=</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="na">fetch</span><span class="p">())</span> <span class="p">{</span>
+   <span class="k">echo</span> <span class="nv">$robot</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>这个 Phalcon\Db::query() 方法返回一个 <a class="reference internal" href="../api/Phalcon_Db_Result_Pdo.html"><em>Phalcon\Db\Result\Pdo</em></a> 实例。这些对象封装了凡是涉及到返回的结果集的功能，例如遍历，寻找特定行，计算总行数等等</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="nv">$sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, name FROM robots&quot;</span><span class="p">;</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+
+<span class="c1">// 遍历结果集</span>
+<span class="k">while</span> <span class="p">(</span><span class="nv">$robot</span> <span class="o">=</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="na">fetch</span><span class="p">())</span> <span class="p">{</span>
+   <span class="k">echo</span> <span class="nv">$robot</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">// 获取第三条记录</span>
+<span class="nv">$result</span><span class="o">-&gt;</span><span class="na">seek</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="nv">$robot</span> <span class="o">=</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="na">fetch</span><span class="p">();</span>
+
+<span class="c1">// 计算结果集的记录数</span>
+<span class="k">echo</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="na">numRows</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="binding-parameters">
+<h2>绑定参数（Binding Parameters）<a class="headerlink" href="#binding-parameters" title="永久链接至标题">¶</a></h2>
+<p>在 <a class="reference internal" href="../api/Phalcon_Db.html"><em>Phalcon\Db</em></a> 中支持绑定参数。虽然使用绑定参数会有很少性能的损失，但是我们鼓励你使用这个方法
+去消除(译者注：是消除，不是减少，因为使用参数绑定可以彻底解决SQL注入问题)SQL注入攻击的可能性。
+字符串和占位符都支持，就像下面展示的那样，绑定参数可以简单地实现：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="c1">// 用数字占位符绑定参数</span>
+<span class="nv">$sql</span>    <span class="o">=</span> <span class="s2">&quot;SELECT * FROM robots WHERE name = ? ORDER BY name&quot;</span><span class="p">;</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="nv">$sql</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s2">&quot;Wall-E&quot;</span><span class="p">));</span>
+
+<span class="c1">// 用指定的占位符绑定参数</span>
+<span class="nv">$sql</span>     <span class="o">=</span> <span class="s2">&quot;INSERT INTO `robots`(name`, year) VALUES (:name, :year)&quot;</span><span class="p">;</span>
+<span class="nv">$success</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="nv">$sql</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s2">&quot;name&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;Astro Boy&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span> <span class="o">=&gt;</span> <span class="mi">1952</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inserting-updating-deleting-rows">
+<h2>插入、更新、删除行（Inserting/Updating/Deleting Rows）<a class="headerlink" href="#inserting-updating-deleting-rows" title="永久链接至标题">¶</a></h2>
+<p>去插入，更新或者删除行，你可以使用原生SQL操作，或者使用类中预设的方法</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="c1">// 使用原生SQL插入行</span>
+<span class="nv">$sql</span>     <span class="o">=</span> <span class="s2">&quot;INSERT INTO `robots`(`name`, `year`) VALUES (&#39;Astro Boy&#39;, 1952)&quot;</span><span class="p">;</span>
+<span class="nv">$success</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+
+<span class="c1">// 使用带占位符的SQL插入行</span>
+<span class="nv">$sql</span>     <span class="o">=</span> <span class="s2">&quot;INSERT INTO `robots`(`name`, `year`) VALUES (?, ?)&quot;</span><span class="p">;</span>
+<span class="nv">$success</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="nv">$sql</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;Astro Boy&#39;</span><span class="p">,</span> <span class="mi">1952</span><span class="p">));</span>
+
+<span class="c1">// 使用类中预设的方法插入行</span>
+<span class="nv">$success</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span>
+   <span class="s2">&quot;robots&quot;</span><span class="p">,</span>
+   <span class="k">array</span><span class="p">(</span><span class="s2">&quot;Astro Boy&quot;</span><span class="p">,</span> <span class="mi">1952</span><span class="p">),</span>
+   <span class="k">array</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="c1">// 使用原生SQL更新行</span>
+<span class="nv">$sql</span>     <span class="o">=</span> <span class="s2">&quot;UPDATE `robots` SET `name` = &#39;Astro boy&#39; WHERE `id` = 101&quot;</span><span class="p">;</span>
+<span class="nv">$success</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+
+<span class="c1">// 使用带占位符的SQL更新行</span>
+<span class="nv">$sql</span>     <span class="o">=</span> <span class="s2">&quot;UPDATE `robots` SET `name` = ? WHERE `id` = ?&quot;</span><span class="p">;</span>
+<span class="nv">$success</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="nv">$sql</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;Astro Boy&#39;</span><span class="p">,</span> <span class="mi">101</span><span class="p">));</span>
+
+<span class="c1">// 使用类中预设的方法更新行</span>
+<span class="nv">$success</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">update</span><span class="p">(</span>
+   <span class="s2">&quot;robots&quot;</span><span class="p">,</span>
+   <span class="k">array</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+   <span class="k">array</span><span class="p">(</span><span class="s2">&quot;New Astro Boy&quot;</span><span class="p">),</span>
+   <span class="s2">&quot;id = 101&quot;</span>
+<span class="p">);</span>
+
+<span class="c1">// 使用原生的SQL删除行</span>
+<span class="nv">$sql</span>     <span class="o">=</span> <span class="s2">&quot;DELETE `robots` WHERE `id` = 101&quot;</span><span class="p">;</span>
+<span class="nv">$success</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+
+<span class="c1">// 使用带占位符的SQL删除行</span>
+<span class="nv">$sql</span>     <span class="o">=</span> <span class="s2">&quot;DELETE `robots` WHERE `id` = ?&quot;</span><span class="p">;</span>
+<span class="nv">$success</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="nv">$sql</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="mi">101</span><span class="p">));</span>
+
+<span class="c1">// 使用类中预设的方法删除行</span>
+<span class="nv">$success</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">delete</span><span class="p">(</span><span class="s2">&quot;robots&quot;</span><span class="p">,</span> <span class="s2">&quot;id = 101&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="transactions-and-nested-transactions">
+<h2>事务与嵌套事务（Transactions and Nested Transactions）<a class="headerlink" href="#transactions-and-nested-transactions" title="永久链接至标题">¶</a></h2>
+<p>PDO支持事务工作。在事务里面执行数据操作, 在大多数数据库系统上, 往往可以提高数据库的性能：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">try</span> <span class="p">{</span>
+
+    <span class="c1">// 开始一个事务</span>
+    <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">begin</span><span class="p">();</span>
+
+    <span class="c1">// 执行一些操作</span>
+    <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="s2">&quot;DELETE `robots` WHERE `id` = 101&quot;</span><span class="p">);</span>
+    <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="s2">&quot;DELETE `robots` WHERE `id` = 102&quot;</span><span class="p">);</span>
+    <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="s2">&quot;DELETE `robots` WHERE `id` = 103&quot;</span><span class="p">);</span>
+
+    <span class="c1">// 提交操作，如果一切正常</span>
+    <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">commit</span><span class="p">();</span>
+
+<span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">Exception</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 如果发现异常，回滚操作</span>
+    <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">rollback</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>除了标准的事务，Phalcon\Db提供了内置支持`嵌套事务`_(如果数据库系统支持的话)。
+当你第二次调用begin()方法，一个嵌套的事务就被创建了：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">try</span> <span class="p">{</span>
+
+    <span class="c1">// 开始一个事务</span>
+    <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">begin</span><span class="p">();</span>
+
+    <span class="c1">// 执行某些SQL操作</span>
+    <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="s2">&quot;DELETE `robots` WHERE `id` = 101&quot;</span><span class="p">);</span>
+
+    <span class="k">try</span> <span class="p">{</span>
+
+        <span class="c1">// 开始一个嵌套事务</span>
+        <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">begin</span><span class="p">();</span>
+
+        <span class="c1">// 在嵌套事务中执行这些SQL</span>
+        <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="s2">&quot;DELETE `robots` WHERE `id` = 102&quot;</span><span class="p">);</span>
+        <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="s2">&quot;DELETE `robots` WHERE `id` = 103&quot;</span><span class="p">);</span>
+
+        <span class="c1">// 创建一个保存的点</span>
+        <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">commit</span><span class="p">();</span>
+
+    <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">Exception</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// 发生错误，释放嵌套的事务</span>
+        <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">rollback</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 继续，执行更多SQL操作</span>
+    <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="s2">&quot;DELETE `robots` WHERE `id` = 104&quot;</span><span class="p">);</span>
+
+    <span class="c1">// 如果一切正常，提交</span>
+    <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">commit</span><span class="p">();</span>
+
+<span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">Exception</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 发生错误，回滚操作</span>
+    <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">rollback</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="database-events">
+<h2>数据库事件（Database Events）<a class="headerlink" href="#database-events" title="永久链接至标题">¶</a></h2>
+<p><a class="reference internal" href="../api/Phalcon_Db.html"><em>Phalcon\Db</em></a> 可以发送事件到一个 <a class="reference internal" href="events.html"><em>EventsManager</em></a> 中，如果它存在的话。
+一些事件当返回布尔值false可以停止操作。我们支持下面这些事件：</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="58%" />
+<col width="21%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">事件名</th>
+<th class="head">何时触发</th>
+<th class="head">可以停止操作吗?</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>afterConnect</td>
+<td>当成功连接数据库之后触发</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td>beforeQuery</td>
+<td>在发送SQL到数据库前触发</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>afterQuery</td>
+<td>在发送SQL到数据库执行后触发</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td>beforeDisconnect</td>
+<td>在关闭一个暂存的数据库连接前触发</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>beginTransaction</td>
+<td>事务启动前触发</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td>rollbackTransaction</td>
+<td>事务回滚前触发</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>commitTransaction</td>
+<td>事务提交前触发</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>绑定一个EventsManager给一个连接是很简单的，Phalcon\Db将触发这些类型为“db”的事件：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">Phalcon\Events\Manager</span> <span class="k">as</span> <span class="nx">EventsManager</span><span class="p">,</span>
+    <span class="nx">\Phalcon\Db\Adapter\Pdo\Mysql</span> <span class="k">as</span> <span class="nx">Connection</span><span class="p">;</span>
+
+<span class="nv">$eventsManager</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">EventsManager</span><span class="p">();</span>
+
+<span class="c1">// 监听所有数据库事件</span>
+<span class="nv">$eventsManager</span><span class="o">-&gt;</span><span class="na">attach</span><span class="p">(</span><span class="s1">&#39;db&#39;</span><span class="p">,</span> <span class="nv">$dbListener</span><span class="p">);</span>
+
+<span class="nv">$connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="k">array</span><span class="p">(</span>
+    <span class="s2">&quot;host&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;username&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;root&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;password&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;secret&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dbname&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;invo&quot;</span>
+<span class="p">));</span>
+
+<span class="c1">// 把eventsManager分配给适配器实例</span>
+<span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">setEventsManager</span><span class="p">(</span><span class="nv">$eventsManager</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>数据库事件中，停止操作是非常有用的，例如：如果你想要实现一个注入检查器，在发送SQL到数据库前触发：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="nv">$eventsManager</span><span class="o">-&gt;</span><span class="na">attach</span><span class="p">(</span><span class="s1">&#39;db:beforeQuery&#39;</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="nv">$event</span><span class="p">,</span> <span class="nv">$connection</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">// 检查是否有恶意关键词</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">preg_match</span><span class="p">(</span><span class="s1">&#39;/DROP|ALTER/i&#39;</span><span class="p">,</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">getSQLStatement</span><span class="p">()))</span> <span class="p">{</span>
+        <span class="c1">// DROP/ALTER 操作是不允许的, 这肯定是一个注入!</span>
+        <span class="c1">// 返回false中断此操作</span>
+        <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 一切正常</span>
+    <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sql-profiling-sql-statements">
+<h2>分析 SQL 语句（Profiling SQL Statements）<a class="headerlink" href="#sql-profiling-sql-statements" title="永久链接至标题">¶</a></h2>
+<p><a class="reference internal" href="../api/Phalcon_Db.html"><em>Phalcon\Db</em></a> 包含了一个性能分析组件，叫 <a class="reference internal" href="../api/Phalcon_Db_Profiler.html"><em>Phalcon\Db\Profiler</em></a> ，它被用于分析数据库的操作性能以便诊断性能问题，并发现瓶颈。
+使用 <a class="reference internal" href="../api/Phalcon_Db_Profiler.html"><em>Phalcon\Db\Profiler</em></a> 来分析数据库真的很简单:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">Phalcon\Events\Manager</span> <span class="k">as</span> <span class="nx">EventsManager</span><span class="p">,</span>
+    <span class="nx">Phalcon\Db\Profiler</span> <span class="k">as</span> <span class="nx">DbProfiler</span><span class="p">;</span>
+
+<span class="nv">$eventsManager</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">EventsManager</span><span class="p">();</span>
+
+<span class="nv">$profiler</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DbProfiler</span><span class="p">();</span>
+
+<span class="c1">//监听所有数据库的事件</span>
+<span class="nv">$eventsManager</span><span class="o">-&gt;</span><span class="na">attach</span><span class="p">(</span><span class="s1">&#39;db&#39;</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="nv">$event</span><span class="p">,</span> <span class="nv">$connection</span><span class="p">)</span> <span class="k">use</span> <span class="p">(</span><span class="nv">$profiler</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getType</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;beforeQuery&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//操作前启动分析</span>
+        <span class="nv">$profiler</span><span class="o">-&gt;</span><span class="na">startProfile</span><span class="p">(</span><span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">getSQLStatement</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getType</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;afterQuery&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//操作后停止分析</span>
+        <span class="nv">$profiler</span><span class="o">-&gt;</span><span class="na">stopProfile</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">//设置事件管理器</span>
+<span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">setEventsManager</span><span class="p">(</span><span class="nv">$eventsManager</span><span class="p">);</span>
+
+<span class="nv">$sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT buyer_name, quantity, product_name &quot;</span>
+     <span class="o">.</span> <span class="s2">&quot;FROM buyers &quot;</span>
+     <span class="o">.</span> <span class="s2">&quot;LEFT JOIN products ON buyers.pid = products.id&quot;</span><span class="p">;</span>
+
+<span class="c1">// 执行SQL</span>
+<span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+
+<span class="c1">// 获取最后一个分析结果</span>
+<span class="nv">$profile</span> <span class="o">=</span> <span class="nv">$profiler</span><span class="o">-&gt;</span><span class="na">getLastProfile</span><span class="p">();</span>
+
+<span class="k">echo</span> <span class="s2">&quot;SQL Statement: &quot;</span><span class="p">,</span> <span class="nv">$profile</span><span class="o">-&gt;</span><span class="na">getSQLStatement</span><span class="p">(),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="k">echo</span> <span class="s2">&quot;Start Time: &quot;</span><span class="p">,</span> <span class="nv">$profile</span><span class="o">-&gt;</span><span class="na">getInitialTime</span><span class="p">(),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="k">echo</span> <span class="s2">&quot;Final Time: &quot;</span><span class="p">,</span> <span class="nv">$profile</span><span class="o">-&gt;</span><span class="na">getFinalTime</span><span class="p">(),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="k">echo</span> <span class="s2">&quot;Total Elapsed Time: &quot;</span><span class="p">,</span> <span class="nv">$profile</span><span class="o">-&gt;</span><span class="na">getTotalElapsedSeconds</span><span class="p">(),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>你也可以基于 <a class="reference internal" href="../api/Phalcon_Db_Profiler.html"><em>Phalcon\Db\Profiler</em></a> 建立你自己的分析器类，以记录SQL语句发送到数据库的实时统计：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">Phalcon\Events\Manager</span> <span class="k">as</span> <span class="nx">EventsManager</span><span class="p">,</span>
+    <span class="nx">Phalcon\Db\Profiler</span> <span class="k">as</span> <span class="nx">Profiler</span><span class="p">,</span>
+    <span class="nx">Phalcon\Db\Profiler\Item</span> <span class="k">as</span> <span class="nx">Item</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">DbProfiler</span> <span class="k">extends</span> <span class="nx">Profiler</span>
+<span class="p">{</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * 在SQL语句将要发送给数据库前执行</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">beforeStartProfile</span><span class="p">(</span><span class="nx">Item</span> <span class="nv">$profile</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">echo</span> <span class="nv">$profile</span><span class="o">-&gt;</span><span class="na">getSQLStatement</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * 在SQL语句已经被发送到数据库后执行</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">afterEndProfile</span><span class="p">(</span><span class="nx">Item</span> <span class="nv">$profile</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">echo</span> <span class="nv">$profile</span><span class="o">-&gt;</span><span class="na">getTotalElapsedSeconds</span><span class="p">();</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="c1">//创建一个事件管理器</span>
+<span class="nv">$eventsManager</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">EventsManager</span><span class="p">();</span>
+
+<span class="c1">//创建一个监听器</span>
+<span class="nv">$dbProfiler</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DbProfiler</span><span class="p">();</span>
+
+<span class="c1">//设置监听器监听所有的数据库事件</span>
+<span class="nv">$eventsManager</span><span class="o">-&gt;</span><span class="na">attach</span><span class="p">(</span><span class="s1">&#39;db&#39;</span><span class="p">,</span> <span class="nv">$dbProfiler</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sql-logging-sql-statements">
+<h2>记录 SQL 语句（Logging SQL Statements）<a class="headerlink" href="#sql-logging-sql-statements" title="永久链接至标题">¶</a></h2>
+<p>使用例如 <a class="reference internal" href="../api/Phalcon_Db.html"><em>Phalcon\Db</em></a> 的高级抽象组件操作数据库，被发送到数据库中执行的原生SQL语句是难以获知的。使用 <a class="reference internal" href="../api/Phalcon_Logger.html"><em>Phalcon\Logger</em></a> 和 <a class="reference internal" href="../api/Phalcon_Db.html"><em>Phalcon\Db</em></a> 来配合使用，可以在数据库抽象层上提供记录的功能。</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">Phalcon\Logger</span><span class="p">,</span>
+    <span class="nx">Phalcon\Events\Manager</span> <span class="k">as</span> <span class="nx">EventsManager</span><span class="p">,</span>
+    <span class="nx">Phalcon\Logger\Adapter\File</span> <span class="k">as</span> <span class="nx">FileLogger</span><span class="p">;</span>
+
+<span class="nv">$eventsManager</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">EventsManager</span><span class="p">();</span>
+
+<span class="nv">$logger</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FileLogger</span><span class="p">(</span><span class="s2">&quot;app/logs/db.log&quot;</span><span class="p">);</span>
+
+<span class="c1">//监听所有数据库事件</span>
+<span class="nv">$eventsManager</span><span class="o">-&gt;</span><span class="na">attach</span><span class="p">(</span><span class="s1">&#39;db&#39;</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="nv">$event</span><span class="p">,</span> <span class="nv">$connection</span><span class="p">)</span> <span class="k">use</span> <span class="p">(</span><span class="nv">$logger</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getType</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;beforeQuery&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nv">$logger</span><span class="o">-&gt;</span><span class="na">log</span><span class="p">(</span><span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">getSQLStatement</span><span class="p">(),</span> <span class="nx">Logger</span><span class="o">::</span><span class="na">INFO</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">//设置事件管理器</span>
+<span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">setEventsManager</span><span class="p">(</span><span class="nv">$eventsManager</span><span class="p">);</span>
+
+<span class="c1">//执行一些SQL</span>
+<span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span>
+    <span class="s2">&quot;products&quot;</span><span class="p">,</span>
+    <span class="k">array</span><span class="p">(</span><span class="s2">&quot;Hot pepper&quot;</span><span class="p">,</span> <span class="mf">3.50</span><span class="p">),</span>
+    <span class="k">array</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;price&quot;</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>如上操作，文件 <em>app/logs/db.log</em> 将包含像下面这样的信息：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">[Sun, 29 Apr 12 22:35:26 -0500][DEBUG][Resource Id #77] INSERT INTO products</span>
+<span class="x">(name, price) VALUES (&#39;Hot pepper&#39;, 3.50)</span>
+</pre></div>
+</div>
+<div class="section" id="implementing-your-own-logger">
+<h3>自定义日志记录器（Implementing your own Logger）<a class="headerlink" href="#implementing-your-own-logger" title="永久链接至标题">¶</a></h3>
+<p>你可以实现你自己的日志类来记录数据库的所有操作，通过创建一个实现了&#8221;log&#8221;方法的类。
+这个方法需要接受一个字符串作为第一个参数。你可以把日志类的对象传递给Phalcon\Db::setLogger()，
+这样执行SQL时将调用这个对象的log方法去记录。</p>
+</div>
+</div>
+<div class="section" id="describing-tables-views">
+<h2>获取数据库表与视图信息（Describing Tables/Views）<a class="headerlink" href="#describing-tables-views" title="永久链接至标题">¶</a></h2>
+<p><a class="reference internal" href="../api/Phalcon_Db.html"><em>Phalcon\Db</em></a> 也提供了方法去检索详细的表和视图信息：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="c1">//获取test_db数据库的所有表</span>
+<span class="nv">$tables</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">listTables</span><span class="p">(</span><span class="s2">&quot;test_db&quot;</span><span class="p">);</span>
+
+<span class="c1">//在数据库中是否存在&#39;robots&#39;这个表</span>
+<span class="nv">$exists</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">tableExists</span><span class="p">(</span><span class="s2">&quot;robots&quot;</span><span class="p">);</span>
+
+<span class="c1">//获取&#39;robots&#39;字段名称，数据类型，特殊特征</span>
+<span class="nv">$fields</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">describeColumns</span><span class="p">(</span><span class="s2">&quot;robots&quot;</span><span class="p">);</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$fields</span> <span class="k">as</span> <span class="nv">$field</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">&quot;Column Type: &quot;</span><span class="p">,</span> <span class="nv">$field</span><span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">// 获取&#39;robots&#39;表的所有索引</span>
+<span class="nv">$indexes</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">describeIndexes</span><span class="p">(</span><span class="s2">&quot;robots&quot;</span><span class="p">);</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$indexes</span> <span class="k">as</span> <span class="nv">$index</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nb">print_r</span><span class="p">(</span><span class="nv">$index</span><span class="o">-&gt;</span><span class="na">getColumns</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="c1">// 获取&#39;robots&#39;表的所有外键</span>
+<span class="nv">$references</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">describeReferences</span><span class="p">(</span><span class="s2">&quot;robots&quot;</span><span class="p">);</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$references</span> <span class="k">as</span> <span class="nv">$reference</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 打印引用的列</span>
+    <span class="nb">print_r</span><span class="p">(</span><span class="nv">$reference</span><span class="o">-&gt;</span><span class="na">getReferencedColumns</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>一个表的详细描述信息和MYSQL的describe命令返回的信息非常相似，它包含以下信息：</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">下标</th>
+<th class="head">描述</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Field</td>
+<td>字段名称</td>
+</tr>
+<tr class="row-odd"><td>Type</td>
+<td>字段类型</td>
+</tr>
+<tr class="row-even"><td>Key</td>
+<td>是否是主键或者索引</td>
+</tr>
+<tr class="row-odd"><td>Null</td>
+<td>是否允许为空</td>
+</tr>
+</tbody>
+</table>
+<p>对于被支持的数据库系统，获取视图的信息的方法也被实现了：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="c1">// 获取test_db数据库的视图</span>
+<span class="nv">$tables</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">listViews</span><span class="p">(</span><span class="s2">&quot;test_db&quot;</span><span class="p">);</span>
+
+<span class="c1">// &#39;robots&#39;视图是否存在数据库中</span>
+<span class="nv">$exists</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">viewExists</span><span class="p">(</span><span class="s2">&quot;robots&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>创建/修改/删除表<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>不同的数据库系统（MySQL,Postgresql等）通过了CREATE, ALTER 或 DROP命令提供了用于创建，修改或删除表的功能。但是不同的数据库语法不同。
+<a class="reference internal" href="../api/Phalcon_Db.html"><em>Phalcon\Db</em></a> 提供了统一的接口来改变表，而不需要区分基于目标存储系统上的SQL语法。</p>
+<div class="section" id="creating-tables">
+<h3>创建数据库表（Creating Tables）<a class="headerlink" href="#creating-tables" title="永久链接至标题">¶</a></h3>
+<p>下面这个例子展示了怎么建立一个表：</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">\Phalcon\Db\Column</span> <span class="k">as</span> <span class="nx">Column</span><span class="p">;</span>
+
+<span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">createTable</span><span class="p">(</span>
+    <span class="s2">&quot;robots&quot;</span><span class="p">,</span>
+    <span class="k">null</span><span class="p">,</span>
+    <span class="k">array</span><span class="p">(</span>
+       <span class="s2">&quot;columns&quot;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nx">Column</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+                <span class="k">array</span><span class="p">(</span>
+                    <span class="s2">&quot;type&quot;</span>          <span class="o">=&gt;</span> <span class="nx">Column</span><span class="o">::</span><span class="na">TYPE_INTEGER</span><span class="p">,</span>
+                    <span class="s2">&quot;size&quot;</span>          <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="s2">&quot;notNull&quot;</span>       <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+                    <span class="s2">&quot;autoIncrement&quot;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+            <span class="k">new</span> <span class="nx">Column</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
+                <span class="k">array</span><span class="p">(</span>
+                    <span class="s2">&quot;type&quot;</span>    <span class="o">=&gt;</span> <span class="nx">Column</span><span class="o">::</span><span class="na">TYPE_VARCHAR</span><span class="p">,</span>
+                    <span class="s2">&quot;size&quot;</span>    <span class="o">=&gt;</span> <span class="mi">70</span><span class="p">,</span>
+                    <span class="s2">&quot;notNull&quot;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+            <span class="k">new</span> <span class="nx">Column</span><span class="p">(</span><span class="s2">&quot;year&quot;</span><span class="p">,</span>
+                <span class="k">array</span><span class="p">(</span>
+                    <span class="s2">&quot;type&quot;</span>    <span class="o">=&gt;</span> <span class="nx">Column</span><span class="o">::</span><span class="na">TYPE_INTEGER</span><span class="p">,</span>
+                    <span class="s2">&quot;size&quot;</span>    <span class="o">=&gt;</span> <span class="mi">11</span><span class="p">,</span>
+                    <span class="s2">&quot;notNull&quot;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Phalcon\Db::createTable()接受一个描述数据库表相关的数组。字段被定义成class <a class="reference internal" href="../api/Phalcon_Db_Column.html"><em>Phalcon\Db\Column</em></a> 。
+下表列出了可用于定义字段的选项：</p>
+<p>Phalcon\Db 支持下面的数据库字段类型:</p>
+<ul class="simple">
+<li>Phalcon\Db\Column::TYPE_INTEGER</li>
+<li>Phalcon\Db\Column::TYPE_DATE</li>
+<li>Phalcon\Db\Column::TYPE_VARCHAR</li>
+<li>Phalcon\Db\Column::TYPE_DECIMAL</li>
+<li>Phalcon\Db\Column::TYPE_DATETIME</li>
+<li>Phalcon\Db\Column::TYPE_CHAR</li>
+<li>Phalcon\Db\Column::TYPE_TEXT</li>
+</ul>
+<p>传入Phalcon\Db::createTable() 的相关数组可能含有的下标：</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="85%" />
+<col width="6%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">下标</th>
+<th class="head">描述</th>
+<th class="head">是否可选</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>&#8220;columns&#8221;</td>
+<td>一个数组包含表的所有字段，字段要定义成 <a class="reference internal" href="../api/Phalcon_Db_Column.html"><em>Phalcon\Db\Column</em></a></td>
+<td>不</td>
+</tr>
+<tr class="row-odd"><td>&#8220;indexes&#8221;</td>
+<td>一个数组包含表的所有索引，索引要定义成 <a class="reference internal" href="../api/Phalcon_Db_Index.html"><em>Phalcon\Db\Index</em></a></td>
+<td>是</td>
+</tr>
+<tr class="row-even"><td>&#8220;references&#8221;</td>
+<td>一个数组包含表的所有外键，外键要定义成 <a class="reference internal" href="../api/Phalcon_Db_Reference.html"><em>Phalcon\Db\Reference</em></a></td>
+<td>是</td>
+</tr>
+<tr class="row-odd"><td>&#8220;options&#8221;</td>
+<td>一个表包含所有创建的选项. 这些选项常常和数据库迁移有关.</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="altering-tables">
+<h3>修改数据库表（Altering Tables）<a class="headerlink" href="#altering-tables" title="永久链接至标题">¶</a></h3>
+<p>随着你的应用的增长，作为一个重构的一部分，或者增加新功能，你也许需要修改你的数据库。
+因为不是所有的数据库允许你修改已存在的字段或者添加字段在2个已存在的字段之间。所以 <a class="reference internal" href="../api/Phalcon_Db.html"><em>Phalcon\Db</em></a>
+会受到数据库系统的这些限制。</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">Phalcon\Db\Column</span> <span class="k">as</span> <span class="nx">Column</span><span class="p">;</span>
+
+<span class="c1">// 添加一个新的字段</span>
+<span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">addColumn</span><span class="p">(</span><span class="s2">&quot;robots&quot;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span>
+    <span class="k">new</span> <span class="nx">Column</span><span class="p">(</span><span class="s2">&quot;robot_type&quot;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
+        <span class="s2">&quot;type&quot;</span>    <span class="o">=&gt;</span> <span class="nx">Column</span><span class="o">::</span><span class="na">TYPE_VARCHAR</span><span class="p">,</span>
+        <span class="s2">&quot;size&quot;</span>    <span class="o">=&gt;</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="s2">&quot;notNull&quot;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+        <span class="s2">&quot;after&quot;</span>   <span class="o">=&gt;</span> <span class="s2">&quot;name&quot;</span>
+    <span class="p">))</span>
+<span class="p">);</span>
+
+<span class="c1">// 修改一个已存在的字段</span>
+<span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">modifyColumn</span><span class="p">(</span><span class="s2">&quot;robots&quot;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Column</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s2">&quot;type&quot;</span> <span class="o">=&gt;</span> <span class="nx">Column</span><span class="o">::</span><span class="na">TYPE_VARCHAR</span><span class="p">,</span>
+    <span class="s2">&quot;size&quot;</span> <span class="o">=&gt;</span> <span class="mi">40</span><span class="p">,</span>
+    <span class="s2">&quot;notNull&quot;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+<span class="p">)));</span>
+
+<span class="c1">// 删除名为&quot;name&quot;的字段</span>
+<span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">dropColumn</span><span class="p">(</span><span class="s2">&quot;robots&quot;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dropping-tables">
+<h3>删除数据库表（Dropping Tables）<a class="headerlink" href="#dropping-tables" title="永久链接至标题">¶</a></h3>
+<p>删除数据库表的例子:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="c1">// 删除&#39;robots&#39;表</span>
+<span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">dropTable</span><span class="p">(</span><span class="s2">&quot;robots&quot;</span><span class="p">);</span>
+
+<span class="c1">// 删除数据库&#39;machines&#39;中的&#39;robots&#39;表</span>
+<span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">dropTable</span><span class="p">(</span><span class="s2">&quot;robots&quot;</span><span class="p">,</span> <span class="s2">&quot;machines&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    <div class="related">
+      <ul>
+        <li class="right" >
+          <a href="../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="intl.html" title="国际化（Internationalization）"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="queue.html" title="队列（Queueing）"
+             >上一页</a> |</li> 
+      </ul>
+    </div>
+        <div id="footer">
+
+          <p>Found a typo or an error? Want to improve this document? The documentation sources are available on <a href="http://github.com/phalcon/docs">Github</a></p>
+          <p>Need support or have questions? Check our <a href="http://phalconphp.com/support">Support Page</a></p>
+
+          <p>The Phalcon PHP Framework is released under the <a href="https://github.com/phalcon/cphalcon/blob/master/docs/LICENSE.md">new BSD license</a>.</p>
+          <p>Except where otherwise noted, content on this site is licensed under the
+            <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License.</a></p>
+             最后更新于 Mar 10, 2015.
+            Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3b3.
+
+          <p>
+             &copy; 版权所有 2014, Phalcon Team and contributors.
+          </p>
+
+            <div class="size-wrap footer-wrap">
+
+                <div class="donate-wrap">
+                    Donate to Phalcon: <a href="http://flattr.com/thing/1134206/Phalcon-PHP-Framework" target="_blank" class="button button-small orange">Flattr</a>
+                    or
+                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="display: inline">
+                        <input type="hidden" name="cmd" value="_s-xclick">
+                        <input type="hidden" name="hosted_button_id" value="7LSYMNMFZNG8W">
+                        <input class="button button-small orange" style="border: inherit; display: inline; font-weight: bold" type="submit" value="via Paypal" title="PayPal — The safer, easier way to pay online.">
+                    </form>
+                </div>
+
+                <div class="social-links">
+                    <a href="https://twitter.com/phalconphp" class="social-link tw">Twitter</a>
+                    <a href="http://www.facebook.com/pages/Phalcon/134230726685897" class="social-link fb">Facebook</a>
+                    <a href="https://plus.google.com/102376109340560896457" class="social-link gp">Google Plus</a>
+                    <a href="http://vimeo.com/user10964377" class="social-link vm">Vimeo</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <script type="text/javascript">
+    /*$(window).on("load", function(){
+      var cx = '009733439235723428699:lh9ltjgvdz8';
+      var gcse = document.createElement('script');
+      gcse.type = 'text/javascript';
+      gcse.async = true;
+      gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//www.google.com/cse/cse.js?cx=' + cx;
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(gcse, s);
+      window.setTimeout(function(){
+        $('.gsc-search-button').css({
+          'background': '#f06715',
+          'padding': '2px',
+          'border': '0'
+        });
+      }, 1000)
+    });*/
+    </script>
+
+  </body>
+</html>
